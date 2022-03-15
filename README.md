@@ -3,6 +3,8 @@
 
 ## NoSQL 기본 개념 정리
 - https://kciter.so/posts/about-mongodb
+- https://ryu-e.tistory.com/2
+- https://dreamcoding.tistory.com/5
 
 ## mongoDB Physical 데이타 저장 구조 설명
 - https://kkyunstory.tistory.com/67
