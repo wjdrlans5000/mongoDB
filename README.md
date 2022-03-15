@@ -36,4 +36,104 @@ db.collection.find('name': { $exists: true })
 ## Document 를 조회하는 find() 메소드
 - https://pro-self-studier.tistory.com/59
 
+## 스크립트
+- 배열 요소 찾기
+```
+db.getCollection('CIData_00').find({"iSr.data":{"$elemMatch":{"tdi":{$gte:"20211101165000",$lte:"20211102165000"}}}},{"_id":true,"iSr":true})
+db.getCollection('CIData_00').find({last_update_datetime:{$gte:ISODate("2021-11-01T00:00:00"),$lt:ISODate("2021-11-02T00:00:00")},"iSr.data":{"$elemMatch":{"tdi":{$gte:"20211101165000",$lte:"20211102165000"}}}},{"_id":true})
+```
 
+- update
+```
+db.getCollection('CIData_11').updateOne(
+{"_id" : "534886b8056aa3b45319a9a217f0142faff-7ef3"},
+{"$set" : {
+			"iCr" : {
+				"syncTime" : ISODate(),
+				"data" : [ 
+            {
+                "siteCode" : "c3505425a617d467e7085587e4407f1b",
+                "pCode" : "1000000504",
+                "td" : "20220216160312",
+                "tdi" : "20220216160312"
+            }, 
+            {
+                "siteCode" : "390ab1b0fcb31727199fcf187b0de9b4",
+                "pCode" : "1000006070",
+                "td" : "20220216160209",
+                "tdi" : "20220216160209"
+            }, 
+            {
+                "siteCode" : "f45aa71ae71b247f5c9257b05e3cb30a",
+                "pCode" : "352",
+                "td" : "20220216160108",
+                "tdi" : "20220216160108"
+            }
+				]
+			}
+		}
+}
+)
+```
+- find $in
+```
+db.getCollection('CIData_05').find({_id:{$in : ["48106344e3a399c1-1fc54852170c45b1e9b1ec6", 
+    "daad1ddf6622498953c322ca16b3085de28-2bbc", 
+    "0f868c22c59738a38d3f8f71704c750415-405", 
+    "8db935eb34c7e8a1-77e222db16a517da65f24a7"]}})
+```
+
+- 스크립트로 원하는 형태의 데이터 만들어서 출력
+```
+var findData = db.getCollection('CIData_01').find({'iSr':{$exists:true}},{'_id':true, 'iSr.data': 1}).sort({'last_update_datetime':1}).limit(50000);
+var result = [];
+
+while (findData.hasNext()){
+    var allData = findData.next();
+    var srData = allData.iSr.data;
+    var jsonObject = {auId:'', data:[]};
+    jsonObject.auId = allData._id;
+    
+    for(var i = 0; i< srData.length; i++ ) {
+       var data = srData[i];
+       var dataObj = {siteCode:'', pCode:'', tdi:''}
+       dataObj.siteCode = data.siteCode;
+       dataObj.pCode = data.pCode;
+       dataObj.tdi = data.td;
+       jsonObject.data.push(dataObj);
+    } ;
+    
+    result.push(jsonObject);
+    
+};
+```
+- 특정 documnet의 object(iCr) 삭제
+```
+db.getCollection('CIData_05').updateOne(
+{"_id" : "48106344e3a399c1-1fc54852170c45b1e9b1ec6"},
+{$unset : {"iCr" : 1}}
+)
+```
+- 특정 object(iCr)가 존재하는 경우 삭제
+```
+db.getCollection('CIData_00').updateMany(
+{'iCr':{$exists:true}},
+{$unset : {"iCr" : 1}}
+)
+```
+
+- id 기준 다중 업데이트
+```
+db.getCollection('CIData_00').updateMany(
+{_id:{$in : [
+  "ff78af428ca3e5504f330cf315c6b258abd-7b3b",
+  "df301a6e91bfe15378c7adc315c1c4a112b-4038"
+    ]}},
+{$unset : {"iCr" : 1}}
+)
+```
+
+- 서버 모니터링
+```
+db.serverStatus().tcmalloc
+```
