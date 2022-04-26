@@ -7,6 +7,7 @@
 - https://dreamcoding.tistory.com/5
 
 ## mongoDB Physical 데이타 저장 구조 설명
+- 컬렉션 > 도큐먼트의 집합 > 도큐먼트의 사이즈는 16MB를 넘을수 없음.
 - https://kkyunstory.tistory.com/67
 
 ## mongoDB INDEX
