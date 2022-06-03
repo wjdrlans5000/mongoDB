@@ -1,6 +1,6 @@
 # mongoDB
 몽고DB 기본 개념 및 NOSQL 정리
-[01. 인덱싱](./01. 인덱싱.md)
+[01. 인덱싱](./01. 인덱싱)
 
 ## NoSQL 기본 개념 정리
 - https://kciter.so/posts/about-mongodb
