@@ -140,3 +140,13 @@ db.getCollection('CIData_00').updateMany(
 ```
 db.serverStatus().tcmalloc
 ```
+
+- 배열의 카운트 조회
+```
+db.getCollection('CIData_00').find({last_update_datetime:{$gte:ISODate("2022-05-24T09:09:00"),$lt:ISODate("2022-05-24T09:27:00")},"CDP":{$exists:true},$where:"this.CDP.data.length > 2"})
+```
+
+- 배열 요소가 '' 인 데이터 조회
+```
+db.getCollection('CIData_00').find({last_update_datetime:{$gte:ISODate("2022-05-30T01:04:00"),$lt:ISODate("2022-05-30T01:24:00")},"CDP":{$exists:true},"iCr":{$exists:true},"iCr.data":{"$elemMatch":{"pCode":{$eq:''}}}},{"iCr":true,"CDP":true})
+```
