@@ -152,3 +152,22 @@ db.getCollection('CIData_00').find({last_update_datetime:{$gte:ISODate("2022-05-
 ```
 db.getCollection('CIData_00').find({last_update_datetime:{$gte:ISODate("2022-05-30T01:04:00"),$lt:ISODate("2022-05-30T01:24:00")},"CDP":{$exists:true},"iCr":{$exists:true},"iCr.data":{"$elemMatch":{"pCode":{$eq:''}}}},{"iCr":true,"CDP":true})
 ```
+
+- 특정 요소를 가진 document 카운트
+```
+var a = 0;
+var b = 0;
+
+for(var i=0; i<20; i++){
+	var name = i;
+
+	if(i<10){
+		name = "0"+i;
+	}
+
+	a = db.getCollection('CIData_'+name).find({last_update_datetime:{$gte:ISODate("2022-05-19T21:06:00"),$lt:ISODate("2022-05-19T21:26:00")},"CDP":{$exists:true},"iCr":{$exists:true}}).count();
+        print('CIData_' + name + ': ' + a);
+        b += a;
+}
+print('sum : ' + b);
+```
