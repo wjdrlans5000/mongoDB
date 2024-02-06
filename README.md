@@ -1,7 +1,13 @@
 # mongoDB
 몽고DB 기본 개념 및 NOSQL 정리
 
-[01.인덱싱](./01.인덱싱)
+- [01.인덱싱](./01.인덱싱)
+- [02.트랜잭션](./02.트랜잭션)
+- [03.애플리케이션 설계](./03.애플리케이션설계)
+- [04.복제](./04.복제)
+- [05.샤딩](./05.샤딩)
+- [06.애플리케이션 관리](./06.애플리케이션관리)
+- [07.서버관리](./07.서버관리)
 
 ## NoSQL 기본 개념 정리
 - https://kciter.so/posts/about-mongodb
@@ -170,4 +176,78 @@ for(var i=0; i<20; i++){
         b += a;
 }
 print('sum : ' + b);
+```
+
+- 집계 쿼리 문자열 카운트
+```
+db.getCollection('CIData_01').aggregate([
+  {
+    $project: {
+      characterCount: { $strLenCP: "convLog.data.updDate" }
+    }
+  },
+  {
+    $match: {characterCount: 14 }
+  }
+])
+```
+- 컬렉션 순회 집계쿼리
+```
+for(let i=0; i<=2; i++){
+ let collectionName = "CIData_0"+i;
+ let result = db[collectionName].aggregate([
+  {
+    '$match': { //WHERE
+      'iCrvc': {
+        '$exists': true
+      }
+    }
+  }, {
+    '$project': { //SELECT
+      'iCrvc.data.cate': true,
+      'iCrvc.data.rFreq': true,
+      'iCrvc.data.rCnt': true,
+      'iCrvc.data.vFreq': true,
+      'iCrvc.data.vCnt': true,
+      'iCrvc.data.cFreq': true,
+      'iCrvc.data.cCnt': true,
+      'iCrvc.data.totalFreq': true,
+      'iCrvc.data.totalCnt': true
+    }
+  }, {
+    '$unwind': {
+      'path': '$iCrvc.data'
+    }
+  }, {
+    '$group': {
+      '_id': '$iCrvc.data.cate',
+      'sumRFreq': {
+        '$sum': '$iCrvc.data.rFreq'
+      },
+      'sumRCnt': {
+        '$sum': '$iCrvc.data.rCnt'
+      },
+      'sumVFreq': {
+        '$sum': '$iCrvc.data.vFreq'
+      },
+      'sumVCnt': {
+        '$sum': '$iCrvc.data.vCnt'
+      },
+      'sumCFreq': {
+        '$sum': '$iCrvc.data.cFreq'
+      },
+      'sumCCnt': {
+        '$sum': '$iCrvc.data.cCnt'
+      },
+      'sumTotalFreq': {
+        '$sum': '$iCrvc.data.totalFreq'
+      },
+      'sumTotalCnt': {
+        '$sum': '$iCrvc.data.totalCnt'
+      }
+    }
+  }
+])
+  print(result);
+}
 ```
