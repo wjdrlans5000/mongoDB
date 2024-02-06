@@ -178,7 +178,11 @@ for(var i=0; i<20; i++){
 print('sum : ' + b);
 ```
 
+## 집계 파이프라인
+- 일치(match), 선출(projection), 정렬(sort), 건너뛰기(skip), 제한(limit), 전개(unwind)
+- 표현식, 누산기, 그룹화 등
 - 집계 쿼리 문자열 카운트
+- $out, $merger는 집계 파이프라인 결과를 컬렉션에 write
 ```
 db.getCollection('CIData_01').aggregate([
   {
